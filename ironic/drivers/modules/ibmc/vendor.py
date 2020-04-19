@@ -28,7 +28,6 @@ LOG = log.getLogger(__name__)
 
 
 class IBMCVendor(base.VendorInterface):
-
     supported = False
 
     def __init__(self):
@@ -87,3 +86,25 @@ class IBMCVendor(base.VendorInterface):
             system = conn.system.get()
             boot_sequence = system.boot_sequence
             return {'boot_up_sequence': boot_sequence}
+
+    @base.passthru(['GET'], async_call=False,
+                   description=_('Returns a list of dictionary, every '
+                                 'dictionary represents a RAID controller '
+                                 'summary info'))
+    @utils.handle_ibmc_exception('get iBMC RAID controller summary')
+    def get_raid_controller_list(self, task, **kwargs):
+        """List RAID controllers summary info of the node.
+
+        :param task: A TaskManager instance containing the node to act on.
+        :param kwargs: Not used.
+        :raises: InvalidParameterValue if kwargs does not contain 'method'.
+        :raises: IBMCConnectionError when it fails to connect to iBMC
+        :raises: IBMCError when iBMC responses an error information
+        :returns: A list of dictionary, every dictionary represents a RAID
+            controller summary of node.
+        """
+        driver_info = utils.parse_driver_info(task.node)
+        with ibmc_client.connect(**driver_info) as conn:
+            controllers = conn.system.storage.list()
+            summaries = [ctrl.summary() for ctrl in controllers]
+            return summaries
