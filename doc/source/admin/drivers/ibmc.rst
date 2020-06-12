@@ -14,7 +14,7 @@ The ``ibmc`` hardware type supports the following Ironic interfaces:
 * Management Interface: Boot device management
 * Power Interface: Power management
 * `RAID Interface`_: RAID controller and disk management
-* `Vendor Interface`_: BIOS management
+* `Vendor Interface`_: Some shortcuts of query ``ibmc`` resource
 
 Prerequisites
 =============
@@ -215,9 +215,9 @@ Physical disks choice strategy
       with the minimum number of disks.
 
 *   when ``share_physical_disks`` option is present, ``ibmc`` driver will
-    create logical disk upon existing physical-disk-groups(logical-disks) first.
-    Only when no exists physical-disk-group matches, then it chooses unused
-    physical disks with same strategy described upon. When multiple exists
+    create logical disk upon existing `physical-disk-group`_ list first. Only
+    when no existing `physical-disk-group`_ matches, then it chooses unused
+    physical disks with same strategy described above. When multiple exists
     physical-disk-groups matches, it will use "waste least" strategy too,
     the bigger capacity left the better. For example, to create a logical disk
     shown below on a ``ibmc`` server which has two RAID5 logical disks already.
@@ -265,7 +265,7 @@ Physical disks choice strategy
 Examples
 --------
 
-A typical scene creates:
+In a typical scenario we may want to create:
  * RAID 5, 500G, root OS volume with 3 disks
  * RAID 5, rest available space, data volume with rest disks
 
@@ -319,3 +319,5 @@ PXE Boot and iSCSI Deploy Process with Ironic Standalone Environment
 .. _Huawei iBMC: https://e.huawei.com/en/products/cloud-computing-dc/servers/accessories/ibmc
 .. _TLS: https://en.wikipedia.org/wiki/Transport_Layer_Security
 .. _HUAWEI iBMC Client library: https://pypi.org/project/python-ibmcclient/
+.. _physical-disk-group: a group of physical disks which have been used by some
+logical-disks.
